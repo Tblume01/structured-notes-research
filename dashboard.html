@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Structured Notes Research Dashboard</title>
+    <!-- Load an accessible sans-serif typeface similar to Coinbase and ChatGPT -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Coinbase‑inspired primary colour */
+        --primary: #0052ff;
+        /* Subtle light background reminiscent of modern dashboards */
+        --background: #f5f7fa;
+      }
+
+      body {
+        margin: 0;
+        background: var(--background);
+        font-family: 'Inter', sans-serif;
+        color: #1a1a1a;
+      }
+
+      header {
+        background: var(--primary);
+        color: #ffffff;
+        padding: 1rem 2rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .card {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: box-shadow 0.2s ease;
+      }
+
+      .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .card h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.25rem;
+        color: var(--primary);
+      }
+
+      .card p {
+        margin: 0.25rem 0;
+      }
+
+      .card a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .card a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Structured Notes Research</header>
+    <main class="container" id="articles">
+      <!-- Articles will be injected here by the script -->
+    </main>
+    <script>
+      async function loadArticles() {
+        try {
+          // Fetch the list of articles from the API. A relative URL ensures the
+          // request goes to the same domain and inherits any rewrites.
+          const res = await fetch('/');
+          const data = await res.json();
+          const container = document.getElementById('articles');
+
+          // Clear any existing content (helpful if reloaded via hot module)
+          container.innerHTML = '';
+
+          data.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <h2>${item.title}</h2>
+              <p><strong>Publication Date:</strong> ${item.publication_date}</p>
+              <p><strong>Fetched At:</strong> ${item.fetched_at}</p>
+              <p><a href="${item.url}" target="_blank" rel="noopener noreferrer">Read more</a></p>
+            `;
+            container.appendChild(card);
+          });
+        } catch (err) {
+          console.error(err);
+          const container = document.getElementById('articles');
+          container.innerHTML = '<p>Failed to load articles. Please try again later.</p>';
+        }
+      }
+      // Kick off the fetch as soon as the page loads
+      loadArticles();
+    </script>
+  </body>
+</html>
