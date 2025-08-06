@@ -1,113 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Structured Notes Research Dashboard</title>
-    <!-- Load an accessible sans-serif typeface similar to Coinbase and ChatGPT -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+<head>
+    <meta charset="utf-8">
+    <title>Structured Notes Research</title>
+    <!-- Import Inter font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-      :root {
-        /* Coinbase‑inspired primary colour */
-        --primary: #0052ff;
-        /* Subtle light background reminiscent of modern dashboards */
-        --background: #f5f7fa;
-      }
-
-      body {
-        margin: 0;
-        background: var(--background);
-        font-family: 'Inter', sans-serif;
-        color: #1a1a1a;
-      }
-
-      header {
-        background: var(--primary);
-        color: #ffffff;
-        padding: 1rem 2rem;
-        font-size: 1.5rem;
-        font-weight: 600;
-      }
-
-      .container {
-        max-width: 960px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-
-      .card {
-        background: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        transition: box-shadow 0.2s ease;
-      }
-
-      .card:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-
-      .card h2 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.25rem;
-        color: var(--primary);
-      }
-
-      .card p {
-        margin: 0.25rem 0;
-      }
-
-      .card a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-      }
-
-      .card a:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
-  <body>
-    <header>Structured Notes Research</header>
-    <main class="container" id="articles">
-      <!-- Articles will be injected here by the script -->
-    </main>
-    <script>
-      async function loadArticles() {
-        try {
-          // Fetch the list of articles from the API. A relative URL ensures the
-          // request goes to the same domain and inherits any rewrites.
-          const res = await fetch('/');
-          const data = await res.json();
-          const container = document.getElementById('articles');
-
-          // Clear any existing content (helpful if reloaded via hot module)
-          container.innerHTML = '';
-
-          data.forEach((item) => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-              <h2>${item.title}</h2>
-              <p><strong>Publication Date:</strong> ${item.publication_date}</p>
-              <p><strong>Fetched At:</strong> ${item.fetched_at}</p>
-              <p><a href="${item.url}" target="_blank" rel="noopener noreferrer">Read more</a></p>
-            `;
-            container.appendChild(card);
-          });
-        } catch (err) {
-          console.error(err);
-          const container = document.getElementById('articles');
-          container.innerHTML = '<p>Failed to load articles. Please try again later.</p>';
+        /* Base styles for the page */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* light grey background reminiscent of modern dashboards */
+            color: #333;
         }
-      }
-      // Kick off the fetch as soon as the page loads
-      loadArticles();
+        /* Header styling with a blue accent inspired by Coinbase */
+        header {
+            background-color: #0052ff; /* Coinbase blue */
+            color: #fff;
+            padding: 24px 16px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        header p {
+            margin: 4px 0 0;
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        /* Main container for cards */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+        /* Card styling for each article */
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.25s ease;
+        }
+        .card:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0052ff;
+        }
+        .card h2 a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .meta {
+            font-size: 0.875rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Structured Notes Research</h1>
+        <p>Live research feed</p>
+    </header>
+    <div class="container" id="content">
+        <!-- Articles will be inserted here by JavaScript -->
+    </div>
+    <script>
+        // Fetch data from the API and build cards dynamically
+        async function fetchData() {
+            try {
+                const response = await fetch('/api');
+                const data = await response.json();
+                const container = document.getElementById('content');
+                container.innerHTML = '';
+                if (!Array.isArray(data) || data.length === 0) {
+                    container.textContent = 'No articles available.';
+                    return;
+                }
+                // Loop through articles and create cards
+                data.forEach((item) => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <h2><a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a></h2>
+                        <div class="meta">Published: ${item.publication_date} &nbsp;|&nbsp; Fetched at: ${item.fetched_at}</div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                // Display an error if the API call fails
+                const container = document.getElementById('content');
+                container.textContent = 'Failed to load data.';
+                console.error(error);
+            }
+        }
+        // Load data when the page is ready
+        document.addEventListener('DOMContentLoaded', fetchData);
     </script>
-  </body>
+</body>
 </html>
