@@ -1,0 +1,12 @@
+{
+  // Configure Vercel to build and route our FastAPI serverless function
+  // The `builds` array tells Vercel to use the Python runtime on the
+  // specified source file.  The `routes` array maps all incoming
+  // requests to our API implementation.
+  "builds": [
+    { "src": "server/api.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "server/api.py" }
+  ]
+}
